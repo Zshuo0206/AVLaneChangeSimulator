@@ -89,3 +89,10 @@ result = avlc.core.runSimulation(scenario, config);
 
 当前 `runSimulation` 和 `evaluateCapability` 均无计算逻辑，调用时分别
 抛出 `AVLC:NotImplemented` 和 `AVLC:CapabilityNotImplemented`，以明确提示功能尚未实现。
+
+## Design documentation
+
+以下版本化文档是后续开发的规范依据，以仓库中的版本为准：
+
+- [Phase 0 Software Requirements v0.1](docs/requirements/phase0_requirements_v0.1.md)
+- [P0.2 Software Architecture v0.1](docs/architecture/p0.2_architecture_v0.1.md)
