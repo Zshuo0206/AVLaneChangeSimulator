@@ -1,0 +1,46 @@
+# MATLAB autosave, editor backups, and temporary files
+*.asv
+*.m~
+*.autosave
+*.tmp
+*.temp
+*.swp
+*.swo
+~$*
+
+# Local caches and compiled / generated artifacts
+.cache/
+cache/
+codegen/
+slprj/
+sccprj/
+*_ert_rtw/
+*_grt_rtw/
+*.slxc
+*.slx.autosave
+*.mex*
+*.o
+*.obj
+
+# Local run output: keep source data and small test / example data trackable
+/results/
+/outputs/
+/tmp/
+/temp/
+/data/temporary/
+/data/generated/
+/data/local/
+/data/simulation_output/
+
+# Local environment configuration; examples may be committed
+.env
+.env.*
+!.env.example
+
+# OS metadata and temporary files
+.DS_Store
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
