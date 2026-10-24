@@ -2,11 +2,12 @@
 
 面向自动驾驶换道能力理论研究的二维科研仿真软件，以 MATLAB 为主开发环境。
 
-## 当前范围：Phase 0 / P0.2.1
+## 当前范围：Phase 0 / P0.2.2
 
-当前仅建立项目目录、`avlc` package、最小函数占位和基础结构检查脚本。
-尚未实现车辆数据模型、Scenario、动力学、数值积分、仿真循环、间隙计算、
-可视化或数据读写。本任务不推进至 P0.2.2，不引入外部依赖。
+已实现基于普通 MATLAB struct 的 VehicleState、Vehicle、Road 和
+SimulationConfig，提供创建器、验证器和 MATLAB 单元测试。
+尚未实现 Scenario、动力学、数值积分、仿真循环、间隙计算、可视化、GUI、
+数据读写或能力理论。本任务停在 P0.2.2，不引入外部依赖。
 
 Phase 0 固定研究两条直线车道上的四辆车：
 
@@ -18,7 +19,7 @@ Phase 0 固定研究两条直线车道上的四辆车：
 | RT | 目标车道后车 |
 
 后续统一采用 SI 单位，以车辆几何中心为位置参考点，六状态接口为
-`x, y, vx, vy, ax, ay`。这些数据模型尚未在本步骤实现。
+`x, y, vx, vy, ax, ay`。这些字段由本阶段的数据模型提供。
 
 ## 包结构与职责
 
@@ -28,7 +29,7 @@ AVLaneChangeSimulator/
 ├── src/
 │   └── +avlc/
 │       ├── +core/             # 仿真引擎（当前仅入口占位）
-│       ├── +model/            # 车辆与状态数据模型（后续实现）
+│       ├── +model/            # 四类基础数据模型、创建器和验证器（已实现）
 │       ├── +dynamics/         # 动力学（后续实现）
 │       ├── +scenario/         # 场景描述与验证（后续实现）
 │       │   └── presets/      # 场景预设预留目录
@@ -71,6 +72,8 @@ CapabilityEvaluator 是独立的未来理论模块，当前通过
 ```matlab
 addpath("src")
 run("examples/check_project_structure.m")
+results = runtests("tests");
+assert(~isempty(results) && all([results.Passed]), "Data-model tests did not all pass.")
 ```
 
 只需将 `src` 加入 MATLAB path，无须递归加入 `+avlc` 或其子包目录。
@@ -96,3 +99,4 @@ result = avlc.core.runSimulation(scenario, config);
 
 - [Phase 0 Software Requirements v0.1](docs/requirements/phase0_requirements_v0.1.md)
 - [P0.2 Software Architecture v0.1](docs/architecture/p0.2_architecture_v0.1.md)
+- [P0.2.2 Data Model Contract v0.1](docs/architecture/p0.2.2_data_model_contract_v0.1.md)
