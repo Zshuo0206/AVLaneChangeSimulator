@@ -1,6 +1,6 @@
 %CHECK_PROJECT_STRUCTURE Verify the MATLAB project structure and public APIs.
 %   Run this script from any working directory. It checks directories,
-%   required files, package resolution, the engine and reserved capability API.
+%   required files, package resolution, the engine and current capability API.
 %   The original MATLAB path is restored on completion or failure.
 
 checkProjectStructure(fileparts(fileparts(mfilename('fullpath'))));
@@ -81,10 +81,13 @@ result = avlc.core.runSimulation(scenario, ...
 assert(isequal(fieldnames(result), {'time'; 'states'; 'controls'; 'metadata'}) && ...
     numel(result.states.EGO) == 2 && numel(result.controls.EGO) == 1, ...
     'AVLC:EngineStructureFailed', 'The engine must return N+1 states and N controls.');
-assertExpectedError(@() avlc.analysis.evaluateCapability( ...
-    struct(), struct(), struct()), 'AVLC:CapabilityNotImplemented');
+z = struct('y', 0, 'w', 0, 'gR', 1, 'cR', 0, 'gF', 1, 'cF', 0, 'gT', 1, 'cT', 0);
+cap = avlc.analysis.evaluateCapability(scenario, z);
+assert(isequal(fieldnames(cap), {'abort'; 'completion'; 'joint'}) && ...
+    cap.abort.feasible && cap.completion.feasible && cap.joint.dualCapable, ...
+    'AVLC:CapabilityStructureFailed', 'The current capability API must return the expected result.');
 
-fprintf('Project structure verification passed (P0.2.6).\n');
+fprintf('Project structure verification passed (P0.2.7).\n');
 end
 
 function assertExpectedError(callback, expectedIdentifier)

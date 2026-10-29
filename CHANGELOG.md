@@ -2,6 +2,14 @@
 
 ## 0.1.0
 
+### P0.2.7
+
+- Implemented current reduced abort/completion execution capability from frozen Parts I-III
+- Added finite capability frontiers, completion windows and frozen joint geometry
+- Preserved closed boundaries, independent branch safety and distinct Inf/NaN semantics
+- Enforced physical recoverability on infinite completion opportunity
+- Added mathematical regression tests, integration coverage and versioned contract
+
 ### P0.2.6
 
 - Added the single-state physical-to-reduced-theory coordinate mapping

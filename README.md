@@ -2,7 +2,7 @@
 
 面向自动驾驶换道能力理论研究的二维科研仿真软件，以 MATLAB 为主开发环境。
 
-## 当前范围：Phase 0 / P0.2.6
+## 当前范围：Phase 0 / P0.2.7
 
 已实现基于普通 MATLAB struct 的 VehicleState、Vehicle、Road 和
 SimulationConfig，提供创建器、验证器和 MATLAB 单元测试。
@@ -15,8 +15,11 @@ SimulationConfig，提供创建器、验证器和 MATLAB 单元测试。
 现已实现 Theory State Builder，将当前四车物理状态映射为八维约化理论状态
 `(y,w,gR,cR,gF,cF,gT,cT)`，包括几何和安全净距到理论间隙的映射。
 该映射不判断安全性或能力，允许负间隙和负横向速度。
-尚未实现能力评估、安全分析、轨迹规划、事件执行、轨迹级理论转换、
-可视化、GUI 或数据读写。本任务停在 P0.2.6，不引入外部依赖。
+现已实现冻结 Parts I–III 的当前约化撤销/完成执行能力评估，以及有限机会分支的
+联合能力几何。`dualCapable` 只表示当前两个执行选项共存。
+尚未实现正时间双选项保持、储备动态、共享控制兼容性、fixed-T 求解、
+机动自由时域、安全分析、轨迹规划、事件执行、轨迹级理论评估、可视化、GUI
+或数据读写。本任务停在 P0.2.7，不引入外部依赖。
 
 Phase 0 固定研究两条直线车道上的四辆车：
 
@@ -42,7 +45,7 @@ AVLaneChangeSimulator/
 │       ├── +dynamics/         # 匀速与 Ego 双积分器单步原语（已实现）
 │       ├── +scenario/         # 四车场景描述与结构验证（已实现）
 │       │   └── presets/      # 场景预设预留目录
-│       ├── +analysis/        # 单状态理论映射（已实现）；能力接口仍预留
+│       ├── +analysis/        # 单状态理论映射与当前约化执行能力评估（已实现）
 │       ├── +result/          # SimulationResult（后续实现）
 │       ├── +visualization/   # 结果绘图与回放（后续实现）
 │       └── +io/              # 保存与加载（后续实现）
@@ -69,10 +72,11 @@ Scenario → Dynamics → Simulation Engine → Analysis → SimulationResult
 不推进车辆状态；分析不得修改历史结果。GUI 位于系统最外层，
 不属于当前开发步骤，`app/` 仅为空目录。
 
-CapabilityEvaluator 是独立的未来理论模块，当前通过
-`avlc.analysis.evaluateCapability` 预留接口，**尚未实现**。
-当前不定义或计算 `K_T`、`K_O_abort`、commitment boundary 或 capability margin，
-也不允许该模块反向控制基础仿真架构。
+CapabilityEvaluator 通过 `avlc.analysis.evaluateCapability(scenario, z)`
+评估当前约化撤销、完成及双选项执行能力，独立于仿真引擎。
+其定义域要求 `y >= 0, w >= 0`，负间隙只禁用相应分支。
+有限几何中的 `Gamma` 只选择前向边界，不判断动态选项消失顺序。
+该模块不反向控制基础仿真架构，也不计算机动自由时域。
 
 ## MATLAB 路径与验证
 
@@ -89,8 +93,8 @@ assert(~isempty(results) && all([results.Passed]), "Data-model tests did not all
 检查脚本也支持从其他当前目录运行：它根据脚本位置定位项目根目录，
 临时添加 `src`，并在检查结束时恢复调用前的 path。
 
-脚本检查目录、必要文件、包路径、最小引擎运行及能力模块占位错误。
-全部通过时输出 `Project structure verification passed (P0.2.6).`；
+脚本检查目录、必要文件、包路径、最小引擎运行及当前能力评估接口。
+全部通过时输出 `Project structure verification passed (P0.2.7).`；
 任何检查失败都会抛出错误。此检查验证结构和最小运行，数值正确性由单元测试验证。
 
 核心调用形式为：
@@ -101,7 +105,7 @@ result = avlc.core.runSimulation(scenario, simulationConfig, egoControl);
 
 `runSimulation` 返回 time、四车 states、EGO controls 和确定性 metadata。
 网格要求 endTime/dt 在容差内为正整数，不使用缩短末步。
-`evaluateCapability` 仍抛出 `AVLC:CapabilityNotImplemented`。
+能力评估通过独立接口显式调用，尚未自动接入 `runSimulation`。
 
 单个时刻的理论状态映射接口为：
 
@@ -111,6 +115,13 @@ z = avlc.analysis.buildTheoryState(scenario, egoState, foState, roState, rtState
 
 当前状态按参数顺序绑定四车角色，不要求等于 Scenario 初态。加速度快照及
 周车横向状态不参与映射；`W` 仍由 Road 派生，不存入 `z`。
+
+```matlab
+cap = avlc.analysis.evaluateCapability(scenario, z);
+```
+
+结果包含 `abort`、`completion` 和 `joint`。无限机会使用 `Inf`；当前分支未定义的
+有限边界/窗口使用 `NaN`，具体约定见 P0.2.7 契约。
 
 ## Design documentation
 
@@ -124,3 +135,4 @@ z = avlc.analysis.buildTheoryState(scenario, egoState, foState, roState, rtState
 - [P0.2.4 Dynamics Contract v0.1](docs/architecture/p0.2.4_dynamics_contract_v0.1.md)
 - [P0.2.5 Simulation Engine Contract v0.1](docs/architecture/p0.2.5_simulation_engine_contract_v0.1.md)
 - [P0.2.6 Theory State Builder Contract v0.1](docs/architecture/p0.2.6_theory_state_builder_contract_v0.1.md)
+- [P0.2.7 Current Capability Contract v0.1](docs/architecture/p0.2.7_current_capability_contract_v0.1.md)
