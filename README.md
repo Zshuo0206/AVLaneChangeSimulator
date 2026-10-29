@@ -2,7 +2,7 @@
 
 面向自动驾驶换道能力理论研究的二维科研仿真软件，以 MATLAB 为主开发环境。
 
-## 当前范围：Phase 0 / P0.2.5
+## 当前范围：Phase 0 / P0.2.6
 
 已实现基于普通 MATLAB struct 的 VehicleState、Vehicle、Road 和
 SimulationConfig，提供创建器、验证器和 MATLAB 单元测试。
@@ -12,8 +12,11 @@ SimulationConfig，提供创建器、验证器和 MATLAB 单元测试。
 后者检查冻结的加速度控制边界。
 现已实现最小固定步长四车 Simulation Engine，支持恒定 Ego 控制、同步推进和
 确定性的轨迹结果记录（N 个控制区间、N+1 个状态样本）。
-尚未实现 Theory State Builder、能力评估、安全分析、轨迹规划、事件执行、
-间隙计算、可视化、GUI 或数据读写。本任务停在 P0.2.5，不引入外部依赖。
+现已实现 Theory State Builder，将当前四车物理状态映射为八维约化理论状态
+`(y,w,gR,cR,gF,cF,gT,cT)`，包括几何和安全净距到理论间隙的映射。
+该映射不判断安全性或能力，允许负间隙和负横向速度。
+尚未实现能力评估、安全分析、轨迹规划、事件执行、轨迹级理论转换、
+可视化、GUI 或数据读写。本任务停在 P0.2.6，不引入外部依赖。
 
 Phase 0 固定研究两条直线车道上的四辆车：
 
@@ -39,7 +42,7 @@ AVLaneChangeSimulator/
 │       ├── +dynamics/         # 匀速与 Ego 双积分器单步原语（已实现）
 │       ├── +scenario/         # 四车场景描述与结构验证（已实现）
 │       │   └── presets/      # 场景预设预留目录
-│       ├── +analysis/        # 分析与理论接口（当前仅能力接口占位）
+│       ├── +analysis/        # 单状态理论映射（已实现）；能力接口仍预留
 │       ├── +result/          # SimulationResult（后续实现）
 │       ├── +visualization/   # 结果绘图与回放（后续实现）
 │       └── +io/              # 保存与加载（后续实现）
@@ -87,7 +90,7 @@ assert(~isempty(results) && all([results.Passed]), "Data-model tests did not all
 临时添加 `src`，并在检查结束时恢复调用前的 path。
 
 脚本检查目录、必要文件、包路径、最小引擎运行及能力模块占位错误。
-全部通过时输出 `Project structure verification passed (P0.2.5 engine).`；
+全部通过时输出 `Project structure verification passed (P0.2.6).`；
 任何检查失败都会抛出错误。此检查验证结构和最小运行，数值正确性由单元测试验证。
 
 核心调用形式为：
@@ -100,6 +103,15 @@ result = avlc.core.runSimulation(scenario, simulationConfig, egoControl);
 网格要求 endTime/dt 在容差内为正整数，不使用缩短末步。
 `evaluateCapability` 仍抛出 `AVLC:CapabilityNotImplemented`。
 
+单个时刻的理论状态映射接口为：
+
+```matlab
+z = avlc.analysis.buildTheoryState(scenario, egoState, foState, roState, rtState);
+```
+
+当前状态按参数顺序绑定四车角色，不要求等于 Scenario 初态。加速度快照及
+周车横向状态不参与映射；`W` 仍由 Road 派生，不存入 `z`。
+
 ## Design documentation
 
 以下版本化文档是后续开发的规范依据，以仓库中的版本为准：
@@ -111,3 +123,4 @@ result = avlc.core.runSimulation(scenario, simulationConfig, egoControl);
 - [P0.2.3 Scenario Contract v0.1](docs/architecture/p0.2.3_scenario_contract_v0.1.md)
 - [P0.2.4 Dynamics Contract v0.1](docs/architecture/p0.2.4_dynamics_contract_v0.1.md)
 - [P0.2.5 Simulation Engine Contract v0.1](docs/architecture/p0.2.5_simulation_engine_contract_v0.1.md)
+- [P0.2.6 Theory State Builder Contract v0.1](docs/architecture/p0.2.6_theory_state_builder_contract_v0.1.md)

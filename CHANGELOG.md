@@ -2,6 +2,13 @@
 
 ## 0.1.0
 
+### P0.2.6
+
+- Added the single-state physical-to-reduced-theory coordinate mapping
+- Preserved frozen geometry, clearance and closing-speed conventions
+- Kept acceleration snapshots irrelevant and negative gaps representable
+- Added builder contract, regression tests and package-resolution verification
+
 ### P0.2.5
 
 - Implemented the minimal fixed-step four-vehicle Simulation Engine
