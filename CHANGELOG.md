@@ -2,6 +2,14 @@
 
 ## 0.1.0
 
+### P0.2.2b
+
+- Frozen the theory-to-software mapping contract
+- Defined center-coordinate safety-distance mapping
+- Defined Road-derived target lateral reference W
+- Clarified acceleration as control rather than analytical state
+- Frozen the future reduced Theory State interface
+
 ### P0.2.2
 
 - Added validated Phase 0 fundamental data models
