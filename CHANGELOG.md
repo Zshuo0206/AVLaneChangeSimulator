@@ -2,6 +2,15 @@
 
 ## 0.1.0
 
+### P0.2.4
+
+- Added Control data contract
+- Added exact constant-velocity propagation primitive
+- Added exact Ego double-integrator propagation primitive
+- Enforced frozen Ego acceleration bounds
+- Preserved acceleration snapshot/control semantic separation
+- Added dynamics regression tests and versioned contract documentation
+
 ### P0.2.3
 
 - Added validated TheoryModelParameters data contract
