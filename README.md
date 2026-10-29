@@ -2,12 +2,14 @@
 
 面向自动驾驶换道能力理论研究的二维科研仿真软件，以 MATLAB 为主开发环境。
 
-## 当前范围：Phase 0 / P0.2.2
+## 当前范围：Phase 0 / P0.2.3
 
 已实现基于普通 MATLAB struct 的 VehicleState、Vehicle、Road 和
 SimulationConfig，提供创建器、验证器和 MATLAB 单元测试。
-尚未实现 Scenario、动力学、数值积分、仿真循环、间隙计算、可视化、GUI、
-数据读写或能力理论。本任务停在 P0.2.2，不引入外部依赖。
+理论到软件映射已冻结，现已实现 TheoryModelParameters 契约和带跨对象验证的
+四车 Scenario 契约；结构有效不表示交通安全或理论可行。
+尚未实现 Theory State Builder、动力学、数值积分、仿真循环、间隙计算、
+可视化、GUI、数据读写或能力评估。本任务停在 P0.2.3，不引入外部依赖。
 
 Phase 0 固定研究两条直线车道上的四辆车：
 
@@ -29,9 +31,9 @@ AVLaneChangeSimulator/
 ├── src/
 │   └── +avlc/
 │       ├── +core/             # 仿真引擎（当前仅入口占位）
-│       ├── +model/            # 四类基础数据模型、创建器和验证器（已实现）
+│       ├── +model/            # 基础数据模型、理论参数及其创建器和验证器（已实现）
 │       ├── +dynamics/         # 动力学（后续实现）
-│       ├── +scenario/         # 场景描述与验证（后续实现）
+│       ├── +scenario/         # 四车场景描述与结构验证（已实现）
 │       │   └── presets/      # 场景预设预留目录
 │       ├── +analysis/        # 分析与理论接口（当前仅能力接口占位）
 │       ├── +result/          # SimulationResult（后续实现）
@@ -101,3 +103,4 @@ result = avlc.core.runSimulation(scenario, config);
 - [P0.2 Software Architecture v0.1](docs/architecture/p0.2_architecture_v0.1.md)
 - [P0.2.2 Data Model Contract v0.1](docs/architecture/p0.2.2_data_model_contract_v0.1.md)
 - [P0.2.2b Theory-to-Software Contract v0.1](docs/architecture/p0.2.2b_theory_to_software_contract_v0.1.md)
+- [P0.2.3 Scenario Contract v0.1](docs/architecture/p0.2.3_scenario_contract_v0.1.md)

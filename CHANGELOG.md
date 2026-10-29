@@ -2,6 +2,15 @@
 
 ## 0.1.0
 
+### P0.2.3
+
+- Added validated TheoryModelParameters data contract
+- Added validated four-vehicle Scenario model
+- Added Scenario-level vehicle ID and role consistency checks
+- Integrated the frozen theory-to-software parameter contract into Scenario structure
+- Reserved the event container without implementing event semantics
+- Added regression and boundary tests for Scenario and theory parameters
+
 ### P0.2.2b
 
 - Frozen the theory-to-software mapping contract
