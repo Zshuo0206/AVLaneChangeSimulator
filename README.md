@@ -2,7 +2,7 @@
 
 面向自动驾驶换道能力理论研究的二维科研仿真软件，以 MATLAB 为主开发环境。
 
-## 当前范围：Phase 0 / P0.2.4
+## 当前范围：Phase 0 / P0.2.5
 
 已实现基于普通 MATLAB struct 的 VehicleState、Vehicle、Road 和
 SimulationConfig，提供创建器、验证器和 MATLAB 单元测试。
@@ -10,9 +10,10 @@ SimulationConfig，提供创建器、验证器和 MATLAB 单元测试。
 四车 Scenario 契约；结构有效不表示交通安全或理论可行。
 现已实现 Control 数据契约、精确匀速单步原语和 Ego 双积分器单步原语，
 后者检查冻结的加速度控制边界。
-尚未实现 Simulation Engine、Theory State Builder、Capability Evaluator、
-轨迹规划、事件执行、间隙计算、可视化、GUI 或数据读写。
-本任务停在 P0.2.4，不引入外部依赖。
+现已实现最小固定步长四车 Simulation Engine，支持恒定 Ego 控制、同步推进和
+确定性的轨迹结果记录（N 个控制区间、N+1 个状态样本）。
+尚未实现 Theory State Builder、能力评估、安全分析、轨迹规划、事件执行、
+间隙计算、可视化、GUI 或数据读写。本任务停在 P0.2.5，不引入外部依赖。
 
 Phase 0 固定研究两条直线车道上的四辆车：
 
@@ -33,7 +34,7 @@ AVLaneChangeSimulator/
 ├── README.md
 ├── src/
 │   └── +avlc/
-│       ├── +core/             # 仿真引擎（当前仅入口占位）
+│       ├── +core/             # 最小固定步长四车仿真引擎（已实现）
 │       ├── +model/            # 基础数据模型、理论参数及其创建器和验证器（已实现）
 │       ├── +dynamics/         # 匀速与 Ego 双积分器单步原语（已实现）
 │       ├── +scenario/         # 四车场景描述与结构验证（已实现）
@@ -85,18 +86,19 @@ assert(~isempty(results) && all([results.Passed]), "Data-model tests did not all
 检查脚本也支持从其他当前目录运行：它根据脚本位置定位项目根目录，
 临时添加 `src`，并在检查结束时恢复调用前的 path。
 
-脚本检查目录、必要文件、两个函数的解析路径及预期错误标识。
-全部通过时输出 `P0.2.1 project structure verification passed.`；
-任何检查失败都会抛出错误。此检查只验证项目骨架，不验证仿真能力。
+脚本检查目录、必要文件、包路径、最小引擎运行及能力模块占位错误。
+全部通过时输出 `Project structure verification passed (P0.2.5 engine).`；
+任何检查失败都会抛出错误。此检查验证结构和最小运行，数值正确性由单元测试验证。
 
-后续核心调用形式为：
+核心调用形式为：
 
 ```matlab
-result = avlc.core.runSimulation(scenario, config);
+result = avlc.core.runSimulation(scenario, simulationConfig, egoControl);
 ```
 
-当前 `runSimulation` 和 `evaluateCapability` 均无计算逻辑，调用时分别
-抛出 `AVLC:NotImplemented` 和 `AVLC:CapabilityNotImplemented`，以明确提示功能尚未实现。
+`runSimulation` 返回 time、四车 states、EGO controls 和确定性 metadata。
+网格要求 endTime/dt 在容差内为正整数，不使用缩短末步。
+`evaluateCapability` 仍抛出 `AVLC:CapabilityNotImplemented`。
 
 ## Design documentation
 
@@ -108,3 +110,4 @@ result = avlc.core.runSimulation(scenario, config);
 - [P0.2.2b Theory-to-Software Contract v0.1](docs/architecture/p0.2.2b_theory_to_software_contract_v0.1.md)
 - [P0.2.3 Scenario Contract v0.1](docs/architecture/p0.2.3_scenario_contract_v0.1.md)
 - [P0.2.4 Dynamics Contract v0.1](docs/architecture/p0.2.4_dynamics_contract_v0.1.md)
+- [P0.2.5 Simulation Engine Contract v0.1](docs/architecture/p0.2.5_simulation_engine_contract_v0.1.md)

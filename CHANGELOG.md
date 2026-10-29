@@ -2,6 +2,15 @@
 
 ## 0.1.0
 
+### P0.2.5
+
+- Implemented the minimal fixed-step four-vehicle Simulation Engine
+- Added constant Ego-control simulation
+- Added synchronized role-to-dynamics orchestration
+- Added deterministic trajectory result storage
+- Frozen the N-control / N+1-state result convention
+- Added fixed-grid validation and simulation-engine regression tests
+
 ### P0.2.4
 
 - Added Control data contract

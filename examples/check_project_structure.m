@@ -1,6 +1,6 @@
-%CHECK_PROJECT_STRUCTURE Verify the P0.2.1 MATLAB project skeleton.
+%CHECK_PROJECT_STRUCTURE Verify the MATLAB project structure and public APIs.
 %   Run this script from any working directory. It checks directories,
-%   required files, package resolution, and explicit placeholder errors.
+%   required files, package resolution, the engine and reserved capability API.
 %   The original MATLAB path is restored on completion or failure.
 
 checkProjectStructure(fileparts(fileparts(mfilename('fullpath'))));
@@ -62,15 +62,29 @@ for index = 1:numel(functionNames)
         functionNames{index}, expectedPaths{index}, resolvedPath);
 end
 
-assertPlaceholderError(@() avlc.core.runSimulation(struct(), struct()), ...
-    'AVLC:NotImplemented');
-assertPlaceholderError(@() avlc.analysis.evaluateCapability( ...
+assertExpectedError(@() avlc.core.runSimulation(struct(), struct(), struct()), ...
+    'AVLC:InvalidScenario');
+road = avlc.model.createRoad(3.6, [-50, 50]);
+params = avlc.model.createTheoryModelParameters(2, 4, 3, 0, 0, 0, 0);
+roles = {'EGO', 'FO', 'RO', 'RT'};
+vehicles = cell(1, 4);
+for index = 1:4
+    state = avlc.model.createVehicleState(0, 0, 1, 0, 0, 0);
+    vehicles{index} = avlc.model.createVehicle(string(index), roles{index}, 4, 2, state);
+end
+scenario = avlc.scenario.createScenario("structure check", "", road, params, vehicles{:});
+result = avlc.core.runSimulation(scenario, ...
+    avlc.model.createSimulationConfig(0.1, 0.1), avlc.model.createControl(0, 0));
+assert(isequal(fieldnames(result), {'time'; 'states'; 'controls'; 'metadata'}) && ...
+    numel(result.states.EGO) == 2 && numel(result.controls.EGO) == 1, ...
+    'AVLC:EngineStructureFailed', 'The engine must return N+1 states and N controls.');
+assertExpectedError(@() avlc.analysis.evaluateCapability( ...
     struct(), struct(), struct()), 'AVLC:CapabilityNotImplemented');
 
-fprintf('P0.2.1 project structure verification passed.\n');
+fprintf('Project structure verification passed (P0.2.5 engine).\n');
 end
 
-function assertPlaceholderError(callback, expectedIdentifier)
+function assertExpectedError(callback, expectedIdentifier)
 try
     callback();
 catch exception
@@ -79,6 +93,6 @@ catch exception
         expectedIdentifier, exception.identifier, exception.message);
     return;
 end
-error('AVLC:MissingPlaceholderError', ...
-    'Placeholder returned without raising %s.', expectedIdentifier);
+error('AVLC:MissingExpectedError', ...
+    'Call returned without raising %s.', expectedIdentifier);
 end
