@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### P0.3.2b — Longitudinal Inner Witness Searcher
+
+- Added fixed-N uniform piecewise-constant candidate search with linprog feasibility LPs
+- Required every successful candidate to pass the unchanged frozen P0.3.2a verifier
+- Added exact violation-time cuts, equality-only deduplication and bounded refinement
+- Preserved unmodified solver points and distinguished all unresolved numerical outcomes
+- Added real rear/front interior-collision regressions and isolated solver-edge tests
+- Added contract and structure registration; FROZEN / PASS after focused independent audit
+- Optimization Toolbox is the only added numerical dependency; no fallback optimizer
+
 ### P0.3.2a — Exact Longitudinal Safe-Prefix Witness Verifier
 
 - Added independent analytic verification of one supplied piecewise-constant longitudinal control
