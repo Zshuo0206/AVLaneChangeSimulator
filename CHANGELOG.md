@@ -2,13 +2,22 @@
 
 ## Unreleased
 
+### P0.3.1 — Exact Global Foundations
+
+- Added independent Part-VI closed preservation-set membership using Psi/F inequalities
+- Added exact progressive lateral endpoint intervals without control search or simulation
+- Preserved closed equalities and distinguished malformed inputs from nonmembership/domain results
+- Added focused boundary tests and a seeded 10,000-state cross-check against frozen P0.2.7
+- Added the P0.3.1 contract and registered both APIs in the structure checker
+- FROZEN / PASS after focused independent audit
+
 ### P0.3.0 — design only
 
 - Extracted global closed capability objects and the finite-atlas fixed-T interface
 - Specified exact lateral endpoints, safe-moment semantics and mandatory P5b-Lift certification
-- Recommended numerical safe-control witnesses with independent whole-prefix verification
+- Recommended an inner feasible-witness numerical oracle with independent whole-prefix verification
 - Kept GF1-PC unaccepted and numerical evidence separate from theorem truth
-- Mapping READY FOR REVIEW; no MATLAB implementation or dependency added
+- Mapping REVIEWED / PASS; no MATLAB implementation or dependency added in P0.3.0
 
 ## 0.1.0
 

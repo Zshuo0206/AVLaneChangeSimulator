@@ -2,7 +2,11 @@
 
 面向自动驾驶换道能力理论研究的二维科研仿真软件，以 MATLAB 为主开发环境。
 
-## 当前基线：P0.2.1–P0.2.9 / Research Visualization V0 FROZEN / PASS
+## 当前基线：P0.2.1–P0.3.1 / Research Visualization V0
+
+P0.2.1–P0.2.9、Research Visualization V0 为 FROZEN / PASS；
+P0.3.0 mapping 为 REVIEWED / PASS；P0.3.1 Exact Global Foundations
+为 FROZEN / PASS after focused independent audit。
 
 已实现基于普通 MATLAB struct 的 VehicleState、Vehicle、Road 和
 SimulationConfig，提供创建器、验证器和 MATLAB 单元测试。
@@ -22,7 +26,7 @@ SimulationConfig，提供创建器、验证器和 MATLAB 单元测试。
 现已增加薄轨迹分析 adapter 和普通 MATLAB research summary figure，
 沿全部 N+1 个状态样本展示车辆运动、当前能力、有限边界、signed reserves
 及最终机制，不改变冻结理论。
-尚未实现全局双选项保持、储备动态、fixed-T 求解、
+尚未实现全局双选项保持搜索、储备动态、fixed-T 求解、
 机动自由时域、安全分析、轨迹规划、事件执行、动画、GUI 或数据读写。
 P0.2.9 只新增局部兼容性后端，不扩展 Research Visualization V0，不引入外部依赖。
 
@@ -138,6 +142,19 @@ diagnostics = avlc.analysis.evaluateCapabilityDiagnostics(z.y, cap);
 mechanisms，`completion` 分开报告当前时间分支与上边界 Regime I/II。
 这些信息不判断共享控制兼容性或正时间双选项保持。P0.2.7 输出保持不变。
 
+## Exact Global Foundations — P0.3.1
+
+```matlab
+membership = avlc.analysis.evaluateGlobalPreservationMembership(scenario,z);
+reach = avlc.analysis.evaluateLateralEndpointReachability(scenario,z0,T,rho);
+```
+
+这两个函数是 exact analytical foundation evaluators，分别返回当前 closed
+global preservation-set membership 和给定 `(T,rho)` 的 exact lateral
+reachable interval；它们不是 fixed-horizon optimizer 或 maneuver-freedom
+horizon solver。集合/分配区间使用闭边界，不依赖有限 frontier 或 reserve。
+输入错误与负状态、超界 rho 的定义域结果分开，详见 P0.3.1 契约。
+
 ## Research Visualization V0
 
 ```matlab
@@ -184,4 +201,5 @@ compatibility = avlc.analysis.evaluateLocalCompatibility(scenario, z, cap, diagn
 - [P0.2.8 Reserve Diagnostics Contract v0.1](docs/architecture/p0.2.8_reserve_diagnostics_contract_v0.1.md)
 - [Research Visualization V0 Contract](docs/architecture/research_visualization_v0_contract.md)
 - [P0.2.9 Local Compatibility Contract v0.1](docs/architecture/p0.2.9_local_compatibility_contract_v0.1.md)
-- [P0.3.0 Global Preservation / Fixed-T Interface Extraction v0.1](docs/architecture/p0.3.0_global_preservation_fixed_t_interface_extraction_v0.1.md) — READY FOR REVIEW，仅数学提取与接口设计，尚未实现。
+- [P0.3.0 Global Preservation / Fixed-T Interface Extraction v0.1](docs/architecture/p0.3.0_global_preservation_fixed_t_interface_extraction_v0.1.md) — REVIEWED / PASS，设计报告。
+- [P0.3.1 Exact Global Foundations Contract v0.1](docs/architecture/p0.3.1_exact_global_foundations_contract_v0.1.md) — FROZEN / PASS after focused independent audit。
