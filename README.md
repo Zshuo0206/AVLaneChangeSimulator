@@ -8,6 +8,9 @@ P0.2.1–P0.2.9、Research Visualization V0 为 FROZEN / PASS；
 P0.3.0 mapping 为 REVIEWED / PASS；P0.3.1 Exact Global Foundations
 为 FROZEN / PASS after focused independent audit。
 
+P0.3.2a supplied longitudinal witness verifier 为
+FROZEN / PASS after focused independent audit。
+
 已实现基于普通 MATLAB struct 的 VehicleState、Vehicle、Road 和
 SimulationConfig，提供创建器、验证器和 MATLAB 单元测试。
 理论到软件映射已冻结，现已实现 TheoryModelParameters 契约和带跨对象验证的
@@ -155,6 +158,18 @@ reachable interval；它们不是 fixed-horizon optimizer 或 maneuver-freedom
 horizon solver。集合/分配区间使用闭边界，不依赖有限 frontier 或 reserve。
 输入错误与负状态、超界 rho 的定义域结果分开，详见 P0.3.1 契约。
 
+## Longitudinal Safe-Prefix Witness Verification — P0.3.2a
+
+```matlab
+witness = struct('times',[0,0.5,1.5,2],'ax',[-2,2,0]);
+certificate = avlc.analysis.verifyLongitudinalSafePrefixWitness(scenario,z0,2,witness);
+```
+
+它解析检查给定分段恒定纵向控制的整个 prefix，包括段内最小 gap。
+成功 certificate 证明该 supplied control whole-prefix safe；失败 candidate
+不证明不存在其他安全纵向控制。控制值须符合当前 Scenario 的 `[-B,C]`；
+本函数不搜索控制，也不判断 fixed-T 共享能力保持或机动自由时域。
+
 ## Research Visualization V0
 
 ```matlab
@@ -203,3 +218,4 @@ compatibility = avlc.analysis.evaluateLocalCompatibility(scenario, z, cap, diagn
 - [P0.2.9 Local Compatibility Contract v0.1](docs/architecture/p0.2.9_local_compatibility_contract_v0.1.md)
 - [P0.3.0 Global Preservation / Fixed-T Interface Extraction v0.1](docs/architecture/p0.3.0_global_preservation_fixed_t_interface_extraction_v0.1.md) — REVIEWED / PASS，设计报告。
 - [P0.3.1 Exact Global Foundations Contract v0.1](docs/architecture/p0.3.1_exact_global_foundations_contract_v0.1.md) — FROZEN / PASS after focused independent audit。
+- [P0.3.2a Longitudinal Safe-Prefix Witness Contract v0.1](docs/architecture/p0.3.2a_longitudinal_safe_prefix_witness_contract_v0.1.md) — FROZEN / PASS after focused independent audit。

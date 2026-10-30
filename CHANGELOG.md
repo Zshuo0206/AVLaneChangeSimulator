@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### P0.3.2a — Exact Longitudinal Safe-Prefix Witness Verifier
+
+- Added independent analytic verification of one supplied piecewise-constant longitudinal control
+- Checked continuous segment minima, including rear/target/front interior collisions
+- Added actual eta/zeta moments and independent recursive-versus-moment terminal audit
+- Kept arithmetic consistency allowances separate from exact safety/control comparisons
+- Supported zero horizon, nonuniform partitions and inadmissible-candidate diagnostics
+- Added focused tests and contract; FROZEN / PASS after focused independent audit
+- No numerical search, GF1-PC, fixed-T evaluator or horizon solver added
+
 ### P0.3.1 — Exact Global Foundations
 
 - Added independent Part-VI closed preservation-set membership using Psi/F inequalities
