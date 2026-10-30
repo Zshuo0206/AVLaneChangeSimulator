@@ -2,6 +2,30 @@
 
 ## 0.1.0
 
+### P0.2.9
+
+- Added certified local GF2 control-set intersection with three-state results
+- Preserved strict/switch identities and separate w=0 progressive requirements
+- Added focused theory tests and a contract documenting excluded degeneracies
+- FROZEN / PASS after focused independent audit
+- Accepted singleton-window degeneracies as UNDEFINED outside the certified domain
+
+### Research Visualization V0
+
+- Added pointwise trajectory analysis over all N+1 physical state samples
+- Preserved frozen values, active-set ties and NaN/Inf histories without recomputation
+- Added a static four-panel MATLAB research figure and one-command example
+- Added adapter equivalence, indexing, raw plot-data and physical-geometry tests
+- Added the visualization contract; FROZEN / PASS
+
+### P0.2.8
+
+- Added thin diagnostics consuming the unchanged P0.2.7 capability result
+- Added signed rO/lT/rT reserves with inherited NaN semantics
+- Preserved all finite abort co-minimizers and completion-upper ties
+- Separated current completion time cases from upper-bound Regime I/II
+- Added focused boundary tests and contract; FROZEN / PASS
+
 ### P0.2.7
 
 - Implemented current reduced abort/completion execution capability from frozen Parts I-III

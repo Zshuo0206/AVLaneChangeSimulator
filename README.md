@@ -2,7 +2,7 @@
 
 面向自动驾驶换道能力理论研究的二维科研仿真软件，以 MATLAB 为主开发环境。
 
-## 当前范围：Phase 0 / P0.2.7
+## 当前基线：P0.2.1–P0.2.9 / Research Visualization V0 FROZEN / PASS
 
 已实现基于普通 MATLAB struct 的 VehicleState、Vehicle、Road 和
 SimulationConfig，提供创建器、验证器和 MATLAB 单元测试。
@@ -17,9 +17,14 @@ SimulationConfig，提供创建器、验证器和 MATLAB 单元测试。
 该映射不判断安全性或能力，允许负间隙和负横向速度。
 现已实现冻结 Parts I–III 的当前约化撤销/完成执行能力评估，以及有限机会分支的
 联合能力几何。`dualCapable` 只表示当前两个执行选项共存。
-尚未实现正时间双选项保持、储备动态、共享控制兼容性、fixed-T 求解、
-机动自由时域、安全分析、轨迹规划、事件执行、轨迹级理论评估、可视化、GUI
-或数据读写。本任务停在 P0.2.7，不引入外部依赖。
+现已增加独立的 signed reserve 与 active-set 诊断：保留 R/F/G ties，
+分别报告当前完成时间分支和有限上边界机制，继承未定义有限量的 NaN 语义。
+现已增加薄轨迹分析 adapter 和普通 MATLAB research summary figure，
+沿全部 N+1 个状态样本展示车辆运动、当前能力、有限边界、signed reserves
+及最终机制，不改变冻结理论。
+尚未实现全局双选项保持、储备动态、fixed-T 求解、
+机动自由时域、安全分析、轨迹规划、事件执行、动画、GUI 或数据读写。
+P0.2.9 只新增局部兼容性后端，不扩展 Research Visualization V0，不引入外部依赖。
 
 Phase 0 固定研究两条直线车道上的四辆车：
 
@@ -45,9 +50,9 @@ AVLaneChangeSimulator/
 │       ├── +dynamics/         # 匀速与 Ego 双积分器单步原语（已实现）
 │       ├── +scenario/         # 四车场景描述与结构验证（已实现）
 │       │   └── presets/      # 场景预设预留目录
-│       ├── +analysis/        # 单状态理论映射与当前约化执行能力评估（已实现）
+│       ├── +analysis/        # 理论映射、当前能力、诊断及薄轨迹分析 adapter
 │       ├── +result/          # SimulationResult（后续实现）
-│       ├── +visualization/   # 结果绘图与回放（后续实现）
+│       ├── +visualization/   # 静态 research summary figure（已实现）
 │       └── +io/              # 保存与加载（后续实现）
 ├── app/                     # GUI 预留目录
 ├── scenarios/
@@ -94,7 +99,7 @@ assert(~isempty(results) && all([results.Passed]), "Data-model tests did not all
 临时添加 `src`，并在检查结束时恢复调用前的 path。
 
 脚本检查目录、必要文件、包路径、最小引擎运行及当前能力评估接口。
-全部通过时输出 `Project structure verification passed (P0.2.7).`；
+全部通过时输出 `Project structure verification passed (Research Visualization V0).`；
 任何检查失败都会抛出错误。此检查验证结构和最小运行，数值正确性由单元测试验证。
 
 核心调用形式为：
@@ -123,7 +128,47 @@ cap = avlc.analysis.evaluateCapability(scenario, z);
 结果包含 `abort`、`completion` 和 `joint`。无限机会使用 `Inf`；当前分支未定义的
 有限边界/窗口使用 `NaN`，具体约定见 P0.2.7 契约。
 
+在同一状态下消费已有结果，不重复评估能力：
+
+```matlab
+diagnostics = avlc.analysis.evaluateCapabilityDiagnostics(z.y, cap);
+```
+
+`diagnostics.reserves` 提供 signed `rO/lT/rT`；`abort` 保留所有有限 active
+mechanisms，`completion` 分开报告当前时间分支与上边界 Regime I/II。
+这些信息不判断共享控制兼容性或正时间双选项保持。P0.2.7 输出保持不变。
+
+## Research Visualization V0
+
+```matlab
+result = avlc.core.runSimulation(scenario, simulationConfig, egoControl);
+analysis = avlc.analysis.analyzeTrajectory(scenario, result);
+fig = avlc.visualization.plotResearchSummary(scenario, result, analysis);
+```
+
+一条命令运行完整示例：
+
+```matlab
+run("examples/run_research_visualization_v0.m")
+```
+
+左侧显示真实四车轨迹和最终车框；右侧显示能力布尔历史、y 与有限边界、
+三个 signed reserves。NaN 直接断线，负 reserve 保留。所有历史为 N+1 列向量，
+与初态到末态逐点对应；轨迹须处于冻结评估器的 `y >= 0, w >= 0` 定义域。
+示例输出 `researchScenario/researchResult/researchAnalysis/researchFigure`，
+不自动保存文件。分析和绘图分层，绘图函数不重新评估理论。
+
 ## Design documentation
+
+P0.2.9 提供独立的、定理定义域内的局部共享控制兼容性评估，
+状态为 `FROZEN / PASS after focused independent audit`：
+
+```matlab
+compatibility = avlc.analysis.evaluateLocalCompatibility(scenario, z, cap, diagnostics);
+```
+
+它不是 controller 或换道决策策略；`UNDEFINED` 与已证明不兼容严格区分。
+详见 [P0.2.9 contract](docs/architecture/p0.2.9_local_compatibility_contract_v0.1.md)。
 
 以下版本化文档是后续开发的规范依据，以仓库中的版本为准：
 
@@ -136,3 +181,6 @@ cap = avlc.analysis.evaluateCapability(scenario, z);
 - [P0.2.5 Simulation Engine Contract v0.1](docs/architecture/p0.2.5_simulation_engine_contract_v0.1.md)
 - [P0.2.6 Theory State Builder Contract v0.1](docs/architecture/p0.2.6_theory_state_builder_contract_v0.1.md)
 - [P0.2.7 Current Capability Contract v0.1](docs/architecture/p0.2.7_current_capability_contract_v0.1.md)
+- [P0.2.8 Reserve Diagnostics Contract v0.1](docs/architecture/p0.2.8_reserve_diagnostics_contract_v0.1.md)
+- [Research Visualization V0 Contract](docs/architecture/research_visualization_v0_contract.md)
+- [P0.2.9 Local Compatibility Contract v0.1](docs/architecture/p0.2.9_local_compatibility_contract_v0.1.md)
