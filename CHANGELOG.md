@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### P0.3.3 — Fixed-T Certified Shared-Preservation Evaluator
+
+- Added theorem-backed inner fixed-T evaluation reusing all frozen foundation/certificate APIs
+- Added initial global/GF2 exact negatives and independent P5b-Lift domain certification
+- Combined one longitudinal witness with a deterministic finite rho grid and terminal corridor overlap
+- Required actual terminal capability and closed global membership cross-checks
+- Added exact contact/perturbation, probe-invariance and end-to-end regression tests
+- Preserved UNRESOLVED for numerical misses and OUTSIDE_PROVED_DOMAIN for unsupported charts
+- FROZEN / PASS after focused independent audit; no horizon or optimizer extension
+
 ### P0.3.2b — Longitudinal Inner Witness Searcher
 
 - Added fixed-N uniform piecewise-constant candidate search with linprog feasibility LPs

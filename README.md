@@ -2,7 +2,7 @@
 
 面向自动驾驶换道能力理论研究的二维科研仿真软件，以 MATLAB 为主开发环境。
 
-## 当前基线：P0.2.1–P0.3.1 / Research Visualization V0
+## 当前基线：P0.2.1–P0.3.2b / Research Visualization V0
 
 P0.2.1–P0.2.9、Research Visualization V0 为 FROZEN / PASS；
 P0.3.0 mapping 为 REVIEWED / PASS；P0.3.1 Exact Global Foundations
@@ -12,6 +12,9 @@ P0.3.2a supplied longitudinal witness verifier 为
 FROZEN / PASS after focused independent audit。
 
 P0.3.2b longitudinal inner witness searcher 为
+FROZEN / PASS after focused independent audit。
+
+P0.3.3 fixed-T certified inner evaluator 为
 FROZEN / PASS after focused independent audit。
 
 已实现基于普通 MATLAB struct 的 VehicleState、Vehicle、Road 和
@@ -32,7 +35,7 @@ SimulationConfig，提供创建器、验证器和 MATLAB 单元测试。
 现已增加薄轨迹分析 adapter 和普通 MATLAB research summary figure，
 沿全部 N+1 个状态样本展示车辆运动、当前能力、有限边界、signed reserves
 及最终机制，不改变冻结理论。
-尚未实现全局双选项保持搜索、储备动态、fixed-T 求解、
+尚未实现完整全局双选项保持搜索、储备动态、完整 fixed-T 求解、
 机动自由时域、安全分析、轨迹规划、事件执行、动画、GUI 或数据读写。
 P0.2.9 只新增局部兼容性后端，不扩展 Research Visualization V0，不引入外部依赖。
 
@@ -187,6 +190,20 @@ piecewise-constant candidates，再由冻结 P0.3.2a verifier 决定是否安全
 `UNRESOLVED / SOLVER_UNAVAILABLE`，
 不使用 fallback optimizer；T=0 直接调用 verifier。
 
+## Fixed-T Certified Shared Preservation — P0.3.3
+
+```matlab
+decision = avlc.analysis.evaluateFixedHorizonFeasibility(scenario,z0,T, ...
+    struct('numSegments',8,'maxCutIterations',20,'numRhoSamples',33));
+```
+
+它复用冻结证书链，检查一条 longitudinal witness 与有限 rho 网格。
+`CERTIFIED_FEASIBLE` 证明当前 finite P5b-Lift chart 下存在保持两种执行选项
+through T 的 shared prefix；`UNRESOLVED` 不证明不可行。
+`INFEASIBILITY_CERTIFIED` 仅来自初始 global nonmembership 或已定义的初始
+GF2 incompatibility；`OUTSIDE_PROVED_DOMAIN` 不作 infeasibility 结论。
+T=0 只检查 global membership；不计算 horizon 或重建 ay trajectory。
+
 ## Research Visualization V0
 
 ```matlab
@@ -237,3 +254,4 @@ compatibility = avlc.analysis.evaluateLocalCompatibility(scenario, z, cap, diagn
 - [P0.3.1 Exact Global Foundations Contract v0.1](docs/architecture/p0.3.1_exact_global_foundations_contract_v0.1.md) — FROZEN / PASS after focused independent audit。
 - [P0.3.2a Longitudinal Safe-Prefix Witness Contract v0.1](docs/architecture/p0.3.2a_longitudinal_safe_prefix_witness_contract_v0.1.md) — FROZEN / PASS after focused independent audit。
 - [P0.3.2b Longitudinal Inner Witness Search Contract v0.1](docs/architecture/p0.3.2b_longitudinal_inner_witness_search_contract_v0.1.md) — FROZEN / PASS after focused independent audit。
+- [P0.3.3 Fixed-Horizon Certified Preservation Contract v0.1](docs/architecture/p0.3.3_fixed_horizon_certified_preservation_contract_v0.1.md) — FROZEN / PASS after focused independent audit。
