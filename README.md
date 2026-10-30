@@ -184,3 +184,4 @@ compatibility = avlc.analysis.evaluateLocalCompatibility(scenario, z, cap, diagn
 - [P0.2.8 Reserve Diagnostics Contract v0.1](docs/architecture/p0.2.8_reserve_diagnostics_contract_v0.1.md)
 - [Research Visualization V0 Contract](docs/architecture/research_visualization_v0_contract.md)
 - [P0.2.9 Local Compatibility Contract v0.1](docs/architecture/p0.2.9_local_compatibility_contract_v0.1.md)
+- [P0.3.0 Global Preservation / Fixed-T Interface Extraction v0.1](docs/architecture/p0.3.0_global_preservation_fixed_t_interface_extraction_v0.1.md) — READY FOR REVIEW，仅数学提取与接口设计，尚未实现。

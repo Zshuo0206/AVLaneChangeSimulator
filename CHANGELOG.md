@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### P0.3.0 — design only
+
+- Extracted global closed capability objects and the finite-atlas fixed-T interface
+- Specified exact lateral endpoints, safe-moment semantics and mandatory P5b-Lift certification
+- Recommended numerical safe-control witnesses with independent whole-prefix verification
+- Kept GF1-PC unaccepted and numerical evidence separate from theorem truth
+- Mapping READY FOR REVIEW; no MATLAB implementation or dependency added
+
 ## 0.1.0
 
 ### P0.2.9
